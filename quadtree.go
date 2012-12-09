@@ -6,16 +6,25 @@ import (
 
 type QuadTree struct {
 	rootNode	*QuadTreeNode
+	worldRect	Rect
+	maxItems	int
 }
 
-func NewQuadTree() *QuadTree {
-	rootNode := NewQuadTreeNode()
+func NewQuadTree(worldRect Rect, maxItems int) *QuadTree {
+	rootNode := NewQuadTreeNode(nil, worldRect, maxItems)
+	
 	return &QuadTree {
-		rootNode
+		rootNode,
+		worldRect,
+		maxItems
 	}
 }
 
-func (this *QuadTree) Insert() {
+func (this *QuadTree) GetWorldRect() Rect {
+	return this.worldRect
+}
+
+func (this *QuadTree) Insert(item *PositionItem) {
 
 }
 
