@@ -45,6 +45,7 @@ func (this *Position) Min(pos *Position) {
 	}
 }
 
+//TODO: change name cause sometime operation is with in, sometime with Position
 func (this *Position) Mult(n int) {
 	this.X = this.X * n
 	this.Y = this.Y * n
@@ -53,4 +54,24 @@ func (this *Position) Mult(n int) {
 func (this *Position) Div(n int) {
 	this.X = this.X / n
 	this.Y = this.Y / n
+}
+
+func PositionAdd(a *Position, b *Position) {
+	x := a.X + b.X
+	y := a.Y + b.Y
+
+	return &Position {
+		x,
+		y
+	}
+}
+
+func PositionSub(a *Position, b *Position) {
+	x := a.X - b.X
+	y := a.Y - b.Y
+
+	return &Position {
+		x,
+		y
+	}
 }
