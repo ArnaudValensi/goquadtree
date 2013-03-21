@@ -1,7 +1,7 @@
 package goquadtree
 
 import (
-	"container/list"
+	// "container/list"
 )
 
 type QuadTree struct {
@@ -16,7 +16,7 @@ func NewQuadTree(worldRect Rect, maxItems int) *QuadTree {
 	return &QuadTree {
 		rootNode,
 		worldRect,
-		maxItems
+		maxItems,
 	}
 }
 
@@ -26,7 +26,7 @@ func (this *QuadTree) GetWorldRect() Rect {
 
 func (this *QuadTree) Insert(item *PositionItem) {
         // check if the world needs resizing
-        if (!this.rootNode.ContainsRect(item.GetRect())) {
+        if (!this.rootNode.ContainsRect(item.Rect)) {
 		min := rootNode.Rect.TopLeft.Min(item.Rect.TopLeft)
 		max := rootNode.Rect.BottomRight.Max(item.Rect.BottomRight)
 		min.Mult(2)
@@ -51,23 +51,22 @@ func (this *QuadTree) Resize(newWorld *Rect) {
 	}
 }
 
-// Gets a list of items containing a specified point
-func (this *QuadTree) GetItemsFromPoint(point *Position, itemsList *List) {
-        if itemsList != null {
-                this.rootNode.GetItemsFromPoint(point, itemsList);
-        }
-}
+// // Gets a list of items containing a specified point
+// func (this *QuadTree) GetItemsFromPoint(point *Position, itemsList *List) {
+//         if itemsList != null {
+//                 this.rootNode.GetItemsFromPoint(point, itemsList);
+//         }
+// }
 
-// Gets a list of items intersecting a specified rectangle
-func (this *QuadTree) GetItemsFromRect(rect *Rect, itemsList *List) {
-        if itemsList != null {
-                this.rootNode.GetItemsFromRect(point, itemsList);
-        }
-}
+// // Gets a list of items intersecting a specified rectangle
+// func (this *QuadTree) GetItemsFromRect(rect *Rect, itemsList *List) {
+//         if itemsList != null {
+//                 this.rootNode.GetItemsFromRect(point, itemsList);
+//         }
+// }
 
 func (this *QuadTree) GetAllItems(itemList *List.list) {
-        if itemsList != null) {
+        if itemsList {
                 this.rootNode.GetAllItems(itemList);
         }
 }
-

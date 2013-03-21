@@ -23,6 +23,7 @@ func NewQuadTreeNode(parent *QuadTreeNode, rect Rect, maxItems int) *QuadTreeNod
 	items := List.Init()
 
 	return &QuadTreeNode {
+		parent,
 		nil,
 		nil,
 		nil,
@@ -30,7 +31,7 @@ func NewQuadTreeNode(parent *QuadTreeNode, rect Rect, maxItems int) *QuadTreeNod
 		isPartitioned,
 		items,
 		maxItems,
-		rect
+		rect,
 	}
 }
 
@@ -48,7 +49,7 @@ func (this *QuadTreeNode) Insert(item *PositionItem) {
         if !this.insertInChild(item) {
                 this.items.Add(item);
                 // Check if this node needs to be partitioned
-                if !this.isPartitioned && this.items.Count() >= this.maxItems {
+                if !this.isPartitioned && this.items.Count() > this.maxItems {
 			this.partition();
                 }
         }
@@ -72,11 +73,10 @@ func (this *QuadTreeNode) insertInChild(item *PositionItem) bool {
         return true;
 }
 
-//TODO
-func (this *QuadTreeNode) PushItemDown(int i) {
-	// TODO: [i]
-        if (this.insertInChild(this.items[i])) {
-                this.RemoveItem(i)
+func (this *QuadTreeNode) PushItemDown(e *Element) {
+        if (this.insertInChild(e.Value)) {
+		this.items.Remove(e)
+                // this.RemoveItem(i)
                 return true
         } else {
 		return false
@@ -84,27 +84,18 @@ func (this *QuadTreeNode) PushItemDown(int i) {
 }
 
 //TODO
-func (this *QuadTreeNode) PushItemUp(int i) {
-        QuadTreePositionItem<T> m = Items[i];
-        RemoveItem(i);
-        ParentNode.Insert(m);
-}
+// func (this *QuadTreeNode) PushItemUp(int i) {
+//         QuadTreePositionItem<T> m = Items[i];
+//         RemoveItem(i);
+//         ParentNode.Insert(m);
+// }
 
-//TODO
 func (this *QuadTreeNode) partition() {
-        // // Create the nodes
-        // Vector2 MidPoint = Vector2.Divide(Vector2.Add(Rect.TopLeft, Rect.BottomRight), 2.0f);
-        // TopLeftNode = new QuadTreeNode<T>(this,new FRect(Rect.TopLeft, MidPoint), MaxItems);
-        // TopRightNode = new QuadTreeNode<T>(this, new FRect(new Vector2(MidPoint.X, Rect.Top), new Vector2(Rect.Right, MidPoint.Y)), MaxItems);
-        // BottomLeftNode = new QuadTreeNode<T>(this, new FRect(new Vector2(Rect.Left, MidPoint.Y), new Vector2(MidPoint.X, Rect.Bottom)), MaxItems);
-        // BottomRightNode = new QuadTreeNode<T>(this, new FRect(MidPoint, Rect.BottomRight), MaxItems);
-
-
 	midPoint := PositionAdd(this.rect.TopLeft, Rect.BottomRight)
 	midPoint.Div(2)
 	
         // Create the nodes
-	this.topLeftNode := NewQuadTreeNode(
+	this.topLeftNode = NewQuadTreeNode(
 		this,
 		NewRect(this.rect.TopLeft, midPoint), 
 		this.maxItem,
@@ -112,36 +103,51 @@ func (this *QuadTreeNode) partition() {
 
 	firstPos := NewPosition(midPoint.X, this.rect.TopLeft.Y)
 	secondPos := NewPosition(this.rect.BottomRight.X, midPoint.Y)
-	this.topRightNode := NewQuadTreeNode(
+	this.topRightNode = NewQuadTreeNode(
 		NewRect(firstPos, secondPos), 
 		this.maxItem,
 		)
 
-	firstPos := NewPosition(this.rect.TopLeft.X, midPoint.Y)
-	secondPos := NewPosition(midPoint.X, this.rect.BottomRight.Y)
-	this.topRightNode := NewQuadTreeNode(
+	firstPos = NewPosition(this.rect.TopLeft.X, midPoint.Y)
+	secondPos = NewPosition(midPoint.X, this.rect.BottomRight.Y)
+	this.topRightNode = NewQuadTreeNode(
 		NewRect(firstPos, secondPos), 
 		this.maxItem,
 		)
 
-	this.topLeftNode := NewQuadTreeNode(
+	this.topLeftNode = NewQuadTreeNode(
 		this,
 		NewRect(midPoint, this.rect.BottomRight), 
 		this.maxItem,
 		)
 
-        IsPartitioned = true;
+        this.isPartitioned = true
 
-	//TODO
+	// WARNING: If we cannot insert item, the item is lost.
+	//          Maybe think about that.
+	for e := l.Front(); e != nil; e = e.Next() {
+		this.PushItemDown(e.Value)
+	}
+
         // Try to push items down to child nodes
-        int i = 0;
-        while (i < Items.Count)
-            {
-                if (!PushItemDown(i))
-                {
-                    i++;
-                }
-        }
+        // int i = 0;
+        // while (i < Items.Count)
+        // {
+        //         if (!this.PushItemDown(i)) {
+	// 		i++;
+        //         }
+        // }
+}
+
+func (this *QuadTreeNode) GetAllItems(itemList *List.list) {
+	itemList.PushBackList(items)
+
+	if this.isPartitioned {
+		this.topLeft.GetAllItems(itemList)
+		this.topRight.GetAllItems(itemList)
+		this.bottomLeft.GetAllItems(itemList)
+		this.bottomRight.GetAllItems(itemList)
+	}
 }
 
 //TODO
