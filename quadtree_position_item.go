@@ -1,11 +1,15 @@
 package goquadtree
 
 type PositionItem struct {
-	Rect	Rect
+	rect	Rect
 }
 
-func NewPositionItem() *PositionItem {
-	return &PositionItem {}
+func NewPositionItem(rect *Rect) *PositionItem {
+	return &PositionItem {*rect}
+}
+
+func (this *PositionItem) GetRect() *Rect {
+	return &this.rect
 }
 
 func (this *PositionItem) Add() {

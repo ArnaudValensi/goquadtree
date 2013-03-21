@@ -9,8 +9,8 @@ type Rect struct {
 
 func NewRect(topLeft *Position, bottomRight *Position) *Rect {
 	return &Rect {
-		topLeft,
-		bottomRight
+		*topLeft,
+		*bottomRight,
 	}
 }
 
@@ -22,26 +22,49 @@ type Position struct {
 func NewPosition(x int, y int) *Position {
 	return &Position {
 		x,
-		y
+		y,
 	}
 }
 
-func (this *Position) Min(pos *Position) {
+func (this *Position) Min(pos *Position) *Position {
+	var x, y int
+
 	if this.X > pos.X {
-		x := pos.X
+		x = pos.X
 	} else {
-		x := this.X
+		x = this.X
 	}
 	
 	if this.Y > pos.Y {
-		y := pos.Y
+		y = pos.Y
 	} else {
-		y := this.Y
+		y = this.Y
 	}
 
 	return &Position {
 		x,
-		y
+		y,
+	}
+}
+
+func (this *Position) Max(pos *Position) *Position {
+	var x, y int
+
+	if this.X > pos.X {
+		x = this.X
+	} else {
+		x = pos.X
+	}
+	
+	if this.Y > pos.Y {
+		y = this.Y
+	} else {
+		y = pos.Y
+	}
+
+	return &Position {
+		x,
+		y,
 	}
 }
 
@@ -56,22 +79,22 @@ func (this *Position) Div(n int) {
 	this.Y = this.Y / n
 }
 
-func PositionAdd(a *Position, b *Position) {
+func PositionAdd(a *Position, b *Position) *Position {
 	x := a.X + b.X
 	y := a.Y + b.Y
 
 	return &Position {
 		x,
-		y
+		y,
 	}
 }
 
-func PositionSub(a *Position, b *Position) {
+func PositionSub(a *Position, b *Position) *Position {
 	x := a.X - b.X
 	y := a.Y - b.Y
 
 	return &Position {
 		x,
-		y
+		y,
 	}
 }

@@ -1,7 +1,7 @@
 package goquadtree
 
 import (
-	// "container/list"
+	"container/list"
 )
 
 type QuadTree struct {
@@ -26,28 +26,30 @@ func (this *QuadTree) GetWorldRect() Rect {
 
 func (this *QuadTree) Insert(item *PositionItem) {
         // check if the world needs resizing
-        if (!this.rootNode.ContainsRect(item.Rect)) {
-		min := rootNode.Rect.TopLeft.Min(item.Rect.TopLeft)
-		max := rootNode.Rect.BottomRight.Max(item.Rect.BottomRight)
+	itemRect := item.GetRect()
+        if !this.rootNode.ContainsRect(itemRect) {
+		rootNodeRect := this.rootNode.GetRect()
+		min := rootNodeRect.TopLeft.Min(&itemRect.TopLeft)
+		max := rootNodeRect.BottomRight.Max(&itemRect.BottomRight)
 		min.Mult(2)
 		max.Mult(2)
 		rect := NewRect(min, max)
                 this.Resize(rect)
         }
-        rootNode.Insert(item);
+        this.rootNode.Insert(item);
 }
 
 func (this *QuadTree) Resize(newWorld *Rect) {
         // Get all of the items in the tree
         // List<QuadTreePositionItem<T>> Components = new List<QuadTreePositionItem<T>>();
-	itemList := List.Init()
+	itemList := list.New()
 	this.GetAllItems(itemList);
 
         // Create a new head
-        this.rootNode = NewQuadTreeNode(nil, newWorld, this.maxItems)
+        this.rootNode = NewQuadTreeNode(nil, *newWorld, this.maxItems)
 
 	for e := itemList.Front(); e != nil; e = e.Next() {
-		this.rootNode.Insert(e.(PositionItem))
+		this.rootNode.Insert(e.Value.(*PositionItem))
 	}
 }
 
@@ -65,8 +67,8 @@ func (this *QuadTree) Resize(newWorld *Rect) {
 //         }
 // }
 
-func (this *QuadTree) GetAllItems(itemList *List.list) {
-        if itemsList {
+func (this *QuadTree) GetAllItems(itemList *list.List) {
+        if itemList != nil {
                 this.rootNode.GetAllItems(itemList);
         }
 }
