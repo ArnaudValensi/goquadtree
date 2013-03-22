@@ -282,11 +282,11 @@ func (this *QuadTreeNode) GetItems(itemList *list.List, rect *Rect) {
 	var err bool = false
 	if this.isPartitioned {
 		node, err = this.GetNode(rect)
-	}
-	if !err && this.isPartitioned {
-		node.GetItems(itemList, rect)
-	} else if err && this.isPartitioned {
-		this.GetAllItems(itemList)
+		if !err {
+			node.GetItems(itemList, rect)
+		} else if err {
+			this.GetAllItems(itemList)
+		}
 	}
 	
 	itemList.PushBackList(this.items);
