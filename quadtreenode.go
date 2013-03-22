@@ -92,8 +92,11 @@ func (this *QuadTreeNode) insertInChild(item *PositionItem, depth int) bool {
 	child, err := this.GetNode(item.GetRect())
 	if !err {
 		child.Insert(item, depth + 1)
+	} else {
+		//this.items.PushBack(item);
+		return false
 	}
-
+	
         // if this.topLeftNode.ContainsRect(item.GetRect()) {
 	// 	this.topLeftNode.Insert(item, depth + 1)
 	// } else if this.topRightNode.ContainsRect(item.GetRect()) {
@@ -133,6 +136,7 @@ func (this *QuadTreeNode) PushItemDown(e *list.Element, depth int) bool {
                 // this.RemoveItem(i)
                 return true
         }
+	this.items.MoveToBack(e)
 	return false
 }
 
@@ -191,13 +195,14 @@ func (this *QuadTreeNode) partition(depth int) {
 	fmt.Printf("partition: Nb items before push down: %d\n", this.items.Len())
 
 	i := 0
-	for this.items.Len() > 0 {
+	for i < this.items.Len() {
 		e := this.items.Front()
 		if !this.PushItemDown(e, depth) {
 			i++
 		}
 	}
-	// TODO: if this.items.Len() => error
+
+	// TODO: it is not an error
 	if this.items.Len() > 0 {
 		fmt.Printf("ERROR")
 	}
@@ -214,21 +219,6 @@ func (this *QuadTreeNode) partition(depth int) {
         //         }
         // }
 }
-
-func (this *QuadTreeNode) GetAllItems(itemList *list.List) {
-	// _ = this.items
-	itemList.PushBackList(this.items)
-
-	if this.isPartitioned {
-		this.topLeftNode.GetAllItems(itemList)
-		this.topRightNode.GetAllItems(itemList)
-		this.bottomLeftNode.GetAllItems(itemList)
-		this.bottomRightNode.GetAllItems(itemList)
-	}
-}
-
-//TODO
-//GetItem*
 
 // Determine which node the object belongs to. 
 //
@@ -267,4 +257,25 @@ func (this *QuadTreeNode) GetAllNodeRect(rectList *list.List) {
 		this.bottomLeftNode.GetAllNodeRect(rectList)
 		this.bottomRightNode.GetAllNodeRect(rectList)
 	}
+}
+
+func (this *QuadTreeNode) GetAllItems(itemList *list.List) {
+	// _ = this.items
+	itemList.PushBackList(this.items)
+
+	if this.isPartitioned {
+		this.topLeftNode.GetAllItems(itemList)
+		this.topRightNode.GetAllItems(itemList)
+		this.bottomLeftNode.GetAllItems(itemList)
+		this.bottomRightNode.GetAllItems(itemList)
+	}
+}
+
+// Fill itemList with all items that could collide with the given Rect
+func (this *QuadTreeNode) GetItems(itemList *list.List, rect *Rect) {
+	node, err := this.GetNode(rect)
+	if !err && this.isPartitioned {
+		node.GetItems(itemList, rect)
+	}
+	itemList.PushBackList(this.items);
 }
