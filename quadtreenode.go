@@ -65,6 +65,14 @@ func (this *QuadTreeNode) setRect(rect *Rect) {
 func (this *QuadTreeNode) Insert(item *PositionItem, depth int) {
 	fmt.Printf("Depth=%d\n", depth)
 
+	//TODO: Warning: work just with a maxItems = 1
+	if this.items.Len() > 0 &&
+		item.Eq(this.items.Front().Value.(*PositionItem)) {
+		//TODO: add an exception
+		fmt.Printf("Error: an item in the same position already exist\n")
+		return
+	}
+
 	// If partitioned, try to find child node to add to
         if !this.insertInChild(item, depth) {
                 this.items.PushBack(item);
@@ -176,15 +184,6 @@ func (this *QuadTreeNode) partition(depth int) {
 
 	fmt.Printf("partition: Nb items before push down: %d\n", this.items.Len())
 
-	// // WARNING: If we cannot insert item, the item is lost.
-	// //          Maybe think about that.
-	// i := 0
-	// for e := this.items.Front(); e != nil; e = e.Next() {
-	// 	this.PushItemDown(e, depth)
-	// 	fmt.Printf("i=%d\n", i)
-	// 	i++
-	// }
-
 	i := 0
 	for this.items.Len() > 0 {
 		e := this.items.Front()
@@ -193,7 +192,9 @@ func (this *QuadTreeNode) partition(depth int) {
 		}
 	}
 	// TODO: if this.items.Len() => error
-
+	if this.items.Len() > 0 {
+		fmt.Printf("ERROR")
+	}
 
 	fmt.Printf("partition: Nb items after push down: %d\n", this.items.Len())
 	fmt.Printf("==/Parition==\n")

@@ -18,6 +18,11 @@ func NewRect(topLeft *Position, bottomRight *Position) *Rect {
 	}
 }
 
+func (this *Rect) Eq(other *Rect) bool {
+	return this.TopLeft.Eq(&other.TopLeft) &&
+		this.BottomRight.Eq(&other.BottomRight)
+}
+
 func (this *Rect) Print() {
 	fmt.Printf("(%d, %d), (%d, %d)", 
 		this.TopLeft.X, this.TopLeft.Y,
@@ -35,6 +40,10 @@ func NewPosition(x int, y int) *Position {
 		x,
 		y,
 	}
+}
+
+func (this *Position) Eq(other *Position) bool {
+	return this.X == other.X && this.Y == other.Y
 }
 
 func (this *Position) Min(pos *Position) *Position {

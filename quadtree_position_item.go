@@ -12,6 +12,10 @@ func (this *PositionItem) GetRect() *Rect {
 	return &this.rect
 }
 
+func (this *PositionItem) Eq(other *PositionItem) bool {
+	return this.rect.Eq(other.GetRect())
+}
+
 func (this *PositionItem) Add() {
 
 }
