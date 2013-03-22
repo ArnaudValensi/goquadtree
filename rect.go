@@ -9,12 +9,18 @@ type Rect struct {
 	// TopRight	Position
 	// BottomLeft	Position
 	BottomRight	Position
+	Width		int
+	Height		int
 }
 
 func NewRect(topLeft *Position, bottomRight *Position) *Rect {
+	width := bottomRight.X - topLeft.X
+	height := bottomRight.Y - topLeft.Y
 	return &Rect {
 		*topLeft,
 		*bottomRight,
+		width,
+		height,
 	}
 }
 

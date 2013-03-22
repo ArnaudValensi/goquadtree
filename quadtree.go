@@ -78,7 +78,13 @@ func (this *QuadTree) GetAllItems(itemList *list.List) {
 }
 
 func (this *QuadTree) GetAllNodeRect(rectList *list.List) {
-	if this.rootNode != nil {
+	if rectList != nil {
 		this.rootNode.GetAllNodeRect(rectList)
+	}
+}
+
+func (this *QuadTree) GetItems(itemList *list.List, rect *Rect) {
+        if itemList != nil && rect != nil {
+		this.rootNode.GetItems(itemList, rect)
 	}
 }
