@@ -89,17 +89,23 @@ func (this *QuadTreeNode) insertInChild(item *PositionItem, depth int) bool {
 		return false
 	}
 
-        if this.topLeftNode.ContainsRect(item.GetRect()) {
-		this.topLeftNode.Insert(item, depth + 1)
-	} else if this.topRightNode.ContainsRect(item.GetRect()) {
-		this.topRightNode.Insert(item, depth + 1)
-	} else if this.bottomLeftNode.ContainsRect(item.GetRect()) {
-		this.bottomLeftNode.Insert(item, depth + 1)
-	} else if this.bottomRightNode.ContainsRect(item.GetRect()) {
-		this.bottomRightNode.Insert(item, depth + 1)
-	} else {
-		return false; // insert in child failed
+	child, err := this.GetNode(item.GetRect())
+	if !err {
+		child.Insert(item, depth + 1)
 	}
+
+        // if this.topLeftNode.ContainsRect(item.GetRect()) {
+	// 	this.topLeftNode.Insert(item, depth + 1)
+	// } else if this.topRightNode.ContainsRect(item.GetRect()) {
+	// 	this.topRightNode.Insert(item, depth + 1)
+	// } else if this.bottomLeftNode.ContainsRect(item.GetRect()) {
+	// 	this.bottomLeftNode.Insert(item, depth + 1)
+	// } else if this.bottomRightNode.ContainsRect(item.GetRect()) {
+	// 	this.bottomRightNode.Insert(item, depth + 1)
+	// } else {
+	// 	fmt.Printf("Error: cannot insert, item should be across multiple nodes\n")
+	// 	return false; // insert in child failed
+	// }
 
 	fmt.Printf("==Child==\n")
 	// fmt.Printf("%+v\n", this.topLeftNode)
@@ -224,12 +230,28 @@ func (this *QuadTreeNode) GetAllItems(itemList *list.List) {
 //TODO
 //GetItem*
 
-func (this *QuadTreeNode) ContainsRect(rect *Rect) bool {
-	// _ = rect.TopLeft.X >= this.rect.TopLeft.X
-        // _ = rect.TopLeft.Y >= this.rect.TopLeft.Y
-        // _ = rect.BottomRight.X <= this.rect.BottomRight.X
-        // _ = rect.BottomRight.Y <= this.rect.BottomRight.Y
+// Determine which node the object belongs to. 
+//
+// Return node, error
+//
+// If error is true, object cannot completely fit within a child node and 
+// is part of the parent node. In this case, node is nil
+func (this *QuadTreeNode) GetNode(rect *Rect) (*QuadTreeNode, bool) {
+        if this.topLeftNode.ContainsRect(rect) {
+		return this.topLeftNode, false
+	} else if this.topRightNode.ContainsRect(rect) {
+		return this.topRightNode, false
+	} else if this.bottomLeftNode.ContainsRect(rect) {
+		return this.bottomLeftNode, false
+	} else if this.bottomRightNode.ContainsRect(rect) {
+		return this.bottomRightNode, false
+	}
 
+	fmt.Printf("Error: cannot insert, item should be across multiple nodes\n")
+	return nil, true // insert in child failed
+}
+
+func (this *QuadTreeNode) ContainsRect(rect *Rect) bool {
         return (rect.TopLeft.X >= this.rect.TopLeft.X &&
                 rect.TopLeft.Y >= this.rect.TopLeft.Y &&
                 rect.BottomRight.X <= this.rect.BottomRight.X &&
