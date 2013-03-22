@@ -1,5 +1,9 @@
 package goquadtree
 
+import (
+	"fmt"
+)
+
 type Rect struct {
 	TopLeft		Position
 	// TopRight	Position
@@ -12,6 +16,13 @@ func NewRect(topLeft *Position, bottomRight *Position) *Rect {
 		*topLeft,
 		*bottomRight,
 	}
+}
+
+func (this *Rect) Print() {
+	fmt.Printf("(%d, %d), (%d, %d)", 
+		this.TopLeft.X, this.TopLeft.Y,
+		this.BottomRight.X, this.BottomRight.Y,
+	)
 }
 
 type Position struct {

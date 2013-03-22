@@ -2,6 +2,7 @@ package goquadtree
 
 import (
 	"container/list"
+	"fmt"
 )
 
 type QuadTree struct {
@@ -36,7 +37,10 @@ func (this *QuadTree) Insert(item *PositionItem) {
 		rect := NewRect(min, max)
                 this.Resize(rect)
         }
-        this.rootNode.Insert(item);
+        this.rootNode.Insert(item, 1);
+	
+	this.rootNode.Print()
+	fmt.Printf("\n")
 }
 
 func (this *QuadTree) Resize(newWorld *Rect) {
@@ -49,7 +53,7 @@ func (this *QuadTree) Resize(newWorld *Rect) {
         this.rootNode = NewQuadTreeNode(nil, *newWorld, this.maxItems)
 
 	for e := itemList.Front(); e != nil; e = e.Next() {
-		this.rootNode.Insert(e.Value.(*PositionItem))
+		this.rootNode.Insert(e.Value.(*PositionItem), 1)
 	}
 }
 
@@ -71,4 +75,10 @@ func (this *QuadTree) GetAllItems(itemList *list.List) {
         if itemList != nil {
                 this.rootNode.GetAllItems(itemList);
         }
+}
+
+func (this *QuadTree) GetAllNodeRect(rectList *list.List) {
+	if this.rootNode != nil {
+		this.rootNode.GetAllNodeRect(rectList)
+	}
 }
