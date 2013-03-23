@@ -18,6 +18,7 @@ type QuadTreeNode struct {
 	rect		Rect
 }
 
+// NewQuadTreeNode return an initialized QuadTreeNode.
 func NewQuadTreeNode(parent *QuadTreeNode, rect Rect, maxItems int) *QuadTreeNode {
 	isPartitioned := false
 	items := list.New()
@@ -35,6 +36,7 @@ func NewQuadTreeNode(parent *QuadTreeNode, rect Rect, maxItems int) *QuadTreeNod
 	}
 }
 
+// Print display the object.
 func (this *QuadTreeNode) Print() {
 	fmt.Printf("parent:%p tl:%p tr:%p bl:%p br:%p isPart:%v nbItems:%d rect:", 
 		this.parentNode, 
@@ -48,6 +50,7 @@ func (this *QuadTreeNode) Print() {
 	this.rect.Print()
 }
 
+// GetRect is an accessor to rect.
 func (this *QuadTreeNode) GetRect() *Rect {
 	return &this.rect
 }
@@ -57,6 +60,7 @@ func (this *QuadTreeNode) setRect(rect *Rect) {
 	this.rect = *rect
 }
 
+// Insert insert a PositionItem in the node.
 func (this *QuadTreeNode) Insert(item *PositionItem, depth int) {
 	// If partitioned, try to find child node to add to
         if !this.insertInChild(item, depth) {
@@ -68,6 +72,8 @@ func (this *QuadTreeNode) Insert(item *PositionItem, depth int) {
         }
 }
 
+// insertInChild try to insert a PositionItem into children.
+// Return true if the item can be insered, false otherwise.
 func (this *QuadTreeNode) insertInChild(item *PositionItem, depth int) bool {
         if !this.isPartitioned {
 		return false
@@ -84,6 +90,10 @@ func (this *QuadTreeNode) insertInChild(item *PositionItem, depth int) bool {
         return true;
 }
 
+// PushItemDown insert in a child an Element which contain a PositionItem.
+// If it cannot be insered into a child, it is keep by the current node
+// and moved back to the items list.
+// Return true if the item is insered into a child, false otherwise.
 func (this *QuadTreeNode) PushItemDown(e *list.Element, depth int) bool {
         if (this.insertInChild(e.Value.(*PositionItem), depth)) {
 		this.items.Remove(e)
@@ -101,6 +111,7 @@ func (this *QuadTreeNode) PushItemDown(e *list.Element, depth int) bool {
 //         ParentNode.Insert(m);
 // }
 
+// partition split the node and allocate the subnodes.
 func (this *QuadTreeNode) partition(depth int) {
 	midPoint := PositionAdd(&this.rect.TopLeft, &this.rect.BottomRight)
 	midPoint.Div(2)
@@ -145,12 +156,10 @@ func (this *QuadTreeNode) partition(depth int) {
 	}
 }
 
-// Determine which node the object belongs to. 
-//
-// Return node, error
-//
+// GetNode determine which node the object belongs to. 
+// Return node, error.
 // If error is true, object cannot completely fit within a child node and 
-// is part of the parent node. In this case, node is nil
+// is part of the parent node. In this case, node is nil.
 func (this *QuadTreeNode) GetNode(rect *Rect) (*QuadTreeNode, bool) {
         if this.topLeftNode.ContainsRect(rect) {
 		return this.topLeftNode, false
@@ -164,6 +173,7 @@ func (this *QuadTreeNode) GetNode(rect *Rect) (*QuadTreeNode, bool) {
 	return nil, true // insert in child failed
 }
 
+// ContainsRect check if the node contains parameter rect.
 func (this *QuadTreeNode) ContainsRect(rect *Rect) bool {
         return (rect.TopLeft.X >= this.rect.TopLeft.X &&
                 rect.TopLeft.Y >= this.rect.TopLeft.Y &&
@@ -171,6 +181,7 @@ func (this *QuadTreeNode) ContainsRect(rect *Rect) bool {
                 rect.BottomRight.Y <= this.rect.BottomRight.Y)
 }
 
+// GetAllNodeRect fill the list rectList with all rect in the tree.
 func (this *QuadTreeNode) GetAllNodeRect(rectList *list.List) {
 	rectList.PushBack(this.rect)
 
@@ -182,6 +193,7 @@ func (this *QuadTreeNode) GetAllNodeRect(rectList *list.List) {
 	}
 }
 
+// GetAllItems fill the list itemList with all items in the tree.
 func (this *QuadTreeNode) GetAllItems(itemList *list.List) {
 	itemList.PushBackList(this.items)
 
@@ -193,7 +205,7 @@ func (this *QuadTreeNode) GetAllItems(itemList *list.List) {
 	}
 }
 
-// Fill itemList with all items that could collide with the given Rect
+// Fill itemList with all items that could collide with the given Rect.
 func (this *QuadTreeNode) GetItems(itemList *list.List, rect *Rect) {
 	var node *QuadTreeNode = nil
 	var err bool = false
