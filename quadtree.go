@@ -10,6 +10,7 @@ type QuadTree struct {
 	maxItems	int
 }
 
+// NewQuadTree return an initialized QuadTree.
 func NewQuadTree(worldRect Rect, maxItems int) *QuadTree {
 	rootNode := NewQuadTreeNode(nil, worldRect, maxItems)
 	
@@ -20,10 +21,12 @@ func NewQuadTree(worldRect Rect, maxItems int) *QuadTree {
 	}
 }
 
+// GetWorldRect return the world rectangle.
 func (this *QuadTree) GetWorldRect() Rect {
 	return this.worldRect
 }
 
+// Insert insert a PositionItem in the tree.
 func (this *QuadTree) Insert(item *PositionItem) {
         // check if the world needs resizing
 	itemRect := item.GetRect()
@@ -39,6 +42,7 @@ func (this *QuadTree) Insert(item *PositionItem) {
         this.rootNode.Insert(item, 1);
 }
 
+// Resize resize the tree.
 func (this *QuadTree) Resize(newWorld *Rect) {
         // Get all of the items in the tree
 	itemList := list.New()
@@ -52,18 +56,21 @@ func (this *QuadTree) Resize(newWorld *Rect) {
 	}
 }
 
+// GetAllItems fill the list itemList with all items in the tree.
 func (this *QuadTree) GetAllItems(itemList *list.List) {
         if itemList != nil {
                 this.rootNode.GetAllItems(itemList);
         }
 }
 
+// GetAllNodeRect fill the list rectList with all rect in the tree.
 func (this *QuadTree) GetAllNodeRect(rectList *list.List) {
 	if rectList != nil {
 		this.rootNode.GetAllNodeRect(rectList)
 	}
 }
 
+// Fill itemList with all items that could collide with the given Rect.
 func (this *QuadTree) GetItems(itemList *list.List, rect *Rect) {
         if itemList != nil && rect != nil {
 		this.rootNode.GetItems(itemList, rect)
