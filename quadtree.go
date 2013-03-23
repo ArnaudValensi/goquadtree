@@ -2,7 +2,6 @@ package goquadtree
 
 import (
 	"container/list"
-	"fmt"
 )
 
 type QuadTree struct {
@@ -38,14 +37,10 @@ func (this *QuadTree) Insert(item *PositionItem) {
                 this.Resize(rect)
         }
         this.rootNode.Insert(item, 1);
-	
-	this.rootNode.Print()
-	fmt.Printf("\n")
 }
 
 func (this *QuadTree) Resize(newWorld *Rect) {
         // Get all of the items in the tree
-        // List<QuadTreePositionItem<T>> Components = new List<QuadTreePositionItem<T>>();
 	itemList := list.New()
 	this.GetAllItems(itemList);
 
@@ -56,20 +51,6 @@ func (this *QuadTree) Resize(newWorld *Rect) {
 		this.rootNode.Insert(e.Value.(*PositionItem), 1)
 	}
 }
-
-// // Gets a list of items containing a specified point
-// func (this *QuadTree) GetItemsFromPoint(point *Position, itemsList *List) {
-//         if itemsList != null {
-//                 this.rootNode.GetItemsFromPoint(point, itemsList);
-//         }
-// }
-
-// // Gets a list of items intersecting a specified rectangle
-// func (this *QuadTree) GetItemsFromRect(rect *Rect, itemsList *List) {
-//         if itemsList != null {
-//                 this.rootNode.GetItemsFromRect(point, itemsList);
-//         }
-// }
 
 func (this *QuadTree) GetAllItems(itemList *list.List) {
         if itemList != nil {
