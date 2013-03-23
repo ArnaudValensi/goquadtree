@@ -5,12 +5,12 @@ import (
 	"fmt"
 )
 
-type QuadTreeNode struct {
-	parentNode	*QuadTreeNode
-	topLeftNode	*QuadTreeNode
-	topRightNode	*QuadTreeNode
-	bottomLeftNode	*QuadTreeNode
-	bottomRightNode	*QuadTreeNode
+type quadTreeNode struct {
+	parentNode	*quadTreeNode
+	topLeftNode	*quadTreeNode
+	topRightNode	*quadTreeNode
+	bottomLeftNode	*quadTreeNode
+	bottomRightNode	*quadTreeNode
 
 	isPartitioned	bool
 	items		*list.List	//PositionItem
@@ -18,12 +18,12 @@ type QuadTreeNode struct {
 	rect		Rect
 }
 
-// NewQuadTreeNode return an initialized QuadTreeNode.
-func NewQuadTreeNode(parent *QuadTreeNode, rect Rect, maxItems int) *QuadTreeNode {
+// newQuadTreeNode return an initialized quadTreeNode.
+func newQuadTreeNode(parent *quadTreeNode, rect Rect, maxItems int) *quadTreeNode {
 	isPartitioned := false
 	items := list.New()
 
-	return &QuadTreeNode {
+	return &quadTreeNode {
 		parent,
 		nil,
 		nil,
@@ -37,7 +37,7 @@ func NewQuadTreeNode(parent *QuadTreeNode, rect Rect, maxItems int) *QuadTreeNod
 }
 
 // Print display the object.
-func (this *QuadTreeNode) Print() {
+func (this *quadTreeNode) Print() {
 	fmt.Printf("parent:%p tl:%p tr:%p bl:%p br:%p isPart:%v nbItems:%d rect:", 
 		this.parentNode, 
 		this.topLeftNode,
@@ -51,17 +51,17 @@ func (this *QuadTreeNode) Print() {
 }
 
 // GetRect is an accessor to rect.
-func (this *QuadTreeNode) GetRect() *Rect {
+func (this *quadTreeNode) GetRect() *Rect {
 	return &this.rect
 }
 
 //TODO: is it used ?
-func (this *QuadTreeNode) setRect(rect *Rect) {
+func (this *quadTreeNode) setRect(rect *Rect) {
 	this.rect = *rect
 }
 
 // Insert insert a PositionItem in the node.
-func (this *QuadTreeNode) Insert(item *PositionItem, depth int) {
+func (this *quadTreeNode) Insert(item *PositionItem, depth int) {
 	// If partitioned, try to find child node to add to
         if !this.insertInChild(item, depth) {
                 this.items.PushBack(item);
@@ -74,7 +74,7 @@ func (this *QuadTreeNode) Insert(item *PositionItem, depth int) {
 
 // insertInChild try to insert a PositionItem into children.
 // Return true if the item can be insered, false otherwise.
-func (this *QuadTreeNode) insertInChild(item *PositionItem, depth int) bool {
+func (this *quadTreeNode) insertInChild(item *PositionItem, depth int) bool {
         if !this.isPartitioned {
 		return false
 	}
@@ -94,7 +94,7 @@ func (this *QuadTreeNode) insertInChild(item *PositionItem, depth int) bool {
 // If it cannot be insered into a child, it is keep by the current node
 // and moved back to the items list.
 // Return true if the item is insered into a child, false otherwise.
-func (this *QuadTreeNode) PushItemDown(e *list.Element, depth int) bool {
+func (this *quadTreeNode) PushItemDown(e *list.Element, depth int) bool {
         if (this.insertInChild(e.Value.(*PositionItem), depth)) {
 		this.items.Remove(e)
                 // this.RemoveItem(i)
@@ -105,19 +105,19 @@ func (this *QuadTreeNode) PushItemDown(e *list.Element, depth int) bool {
 }
 
 //TODO
-// func (this *QuadTreeNode) PushItemUp(int i) {
+// func (this *quadTreeNode) PushItemUp(int i) {
 //         QuadTreePositionItem<T> m = Items[i];
 //         RemoveItem(i);
 //         ParentNode.Insert(m);
 // }
 
 // partition split the node and allocate the subnodes.
-func (this *QuadTreeNode) partition(depth int) {
+func (this *quadTreeNode) partition(depth int) {
 	midPoint := PositionAdd(&this.rect.TopLeft, &this.rect.BottomRight)
 	midPoint.Div(2)
 	
         // Create the nodes
-	this.topLeftNode = NewQuadTreeNode(
+	this.topLeftNode = newQuadTreeNode(
 		this,
 		*NewRect(&this.rect.TopLeft, midPoint), 
 		this.maxItems,
@@ -125,7 +125,7 @@ func (this *QuadTreeNode) partition(depth int) {
 
 	firstPos := NewPosition(midPoint.X, this.rect.TopLeft.Y)
 	secondPos := NewPosition(this.rect.BottomRight.X, midPoint.Y)
-	this.topRightNode = NewQuadTreeNode(
+	this.topRightNode = newQuadTreeNode(
 		this,
 		*NewRect(firstPos, secondPos), 
 		this.maxItems,
@@ -133,13 +133,13 @@ func (this *QuadTreeNode) partition(depth int) {
 
 	firstPos = NewPosition(this.rect.TopLeft.X, midPoint.Y)
 	secondPos = NewPosition(midPoint.X, this.rect.BottomRight.Y)
-	this.bottomLeftNode = NewQuadTreeNode(
+	this.bottomLeftNode = newQuadTreeNode(
 		this,
 		*NewRect(firstPos, secondPos), 
 		this.maxItems,
 		)
 
-	this.bottomRightNode = NewQuadTreeNode(
+	this.bottomRightNode = newQuadTreeNode(
 		this,
 		*NewRect(midPoint, &this.rect.BottomRight), 
 		this.maxItems,
@@ -160,7 +160,7 @@ func (this *QuadTreeNode) partition(depth int) {
 // Return node, error.
 // If error is true, object cannot completely fit within a child node and 
 // is part of the parent node. In this case, node is nil.
-func (this *QuadTreeNode) GetNode(rect *Rect) (*QuadTreeNode, bool) {
+func (this *quadTreeNode) GetNode(rect *Rect) (*quadTreeNode, bool) {
         if this.topLeftNode.ContainsRect(rect) {
 		return this.topLeftNode, false
 	} else if this.topRightNode.ContainsRect(rect) {
@@ -174,7 +174,7 @@ func (this *QuadTreeNode) GetNode(rect *Rect) (*QuadTreeNode, bool) {
 }
 
 // ContainsRect check if the node contains parameter rect.
-func (this *QuadTreeNode) ContainsRect(rect *Rect) bool {
+func (this *quadTreeNode) ContainsRect(rect *Rect) bool {
         return (rect.TopLeft.X >= this.rect.TopLeft.X &&
                 rect.TopLeft.Y >= this.rect.TopLeft.Y &&
                 rect.BottomRight.X <= this.rect.BottomRight.X &&
@@ -182,7 +182,7 @@ func (this *QuadTreeNode) ContainsRect(rect *Rect) bool {
 }
 
 // GetAllNodeRect fill the list rectList with all rect in the tree.
-func (this *QuadTreeNode) GetAllNodeRect(rectList *list.List) {
+func (this *quadTreeNode) GetAllNodeRect(rectList *list.List) {
 	rectList.PushBack(this.rect)
 
 	if this.isPartitioned {
@@ -194,7 +194,7 @@ func (this *QuadTreeNode) GetAllNodeRect(rectList *list.List) {
 }
 
 // GetAllItems fill the list itemList with all items in the tree.
-func (this *QuadTreeNode) GetAllItems(itemList *list.List) {
+func (this *quadTreeNode) GetAllItems(itemList *list.List) {
 	itemList.PushBackList(this.items)
 
 	if this.isPartitioned {
@@ -206,8 +206,8 @@ func (this *QuadTreeNode) GetAllItems(itemList *list.List) {
 }
 
 // Fill itemList with all items that could collide with the given Rect.
-func (this *QuadTreeNode) GetItems(itemList *list.List, rect *Rect) {
-	var node *QuadTreeNode = nil
+func (this *quadTreeNode) GetItems(itemList *list.List, rect *Rect) {
+	var node *quadTreeNode = nil
 	var err bool = false
 	if this.isPartitioned {
 		node, err = this.GetNode(rect)

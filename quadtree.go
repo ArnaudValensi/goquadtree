@@ -1,3 +1,4 @@
+// TODO Description
 package goquadtree
 
 import (
@@ -5,14 +6,14 @@ import (
 )
 
 type QuadTree struct {
-	rootNode	*QuadTreeNode
+	rootNode	*quadTreeNode
 	worldRect	Rect
 	maxItems	int
 }
 
-// NewQuadTree return an initialized QuadTree.
+// newQuadTree return an initialized QuadTree.
 func NewQuadTree(worldRect Rect, maxItems int) *QuadTree {
-	rootNode := NewQuadTreeNode(nil, worldRect, maxItems)
+	rootNode := newQuadTreeNode(nil, worldRect, maxItems)
 	
 	return &QuadTree {
 		rootNode,
@@ -49,7 +50,7 @@ func (this *QuadTree) Resize(newWorld *Rect) {
 	this.GetAllItems(itemList);
 
         // Create a new head
-        this.rootNode = NewQuadTreeNode(nil, *newWorld, this.maxItems)
+        this.rootNode = newQuadTreeNode(nil, *newWorld, this.maxItems)
 
 	for e := itemList.Front(); e != nil; e = e.Next() {
 		this.rootNode.Insert(e.Value.(*PositionItem), 1)
