@@ -18,11 +18,6 @@ type QuadTreeNode struct {
 	rect		Rect
 }
 
-// //TODO
-// func NewQuadTreeNode(parent *QuadTreeNode, rect Rect, maxItems int) *QuadTreeNode {
-
-// }
-
 func NewQuadTreeNode(parent *QuadTreeNode, rect Rect, maxItems int) *QuadTreeNode {
 	isPartitioned := false
 	items := list.New()
@@ -65,13 +60,13 @@ func (this *QuadTreeNode) setRect(rect *Rect) {
 func (this *QuadTreeNode) Insert(item *PositionItem, depth int) {
 	fmt.Printf("Depth=%d\n", depth)
 
-	//TODO: Warning: work just with a maxItems = 1
-	if this.items.Len() > 0 &&
-		item.Eq(this.items.Front().Value.(*PositionItem)) {
-		//TODO: add an exception
-		fmt.Printf("Error: an item in the same position already exist\n")
-		return
-	}
+	// //TODO: Warning: work just with a maxItems = 1
+	// if this.items.Len() > 0 &&
+	// 	item.Eq(this.items.Front().Value.(*PositionItem)) {
+	// 	//TODO: add an exception
+	// 	fmt.Printf("Error: an item in the same position already exist\n")
+	// 	return
+	// }
 
 	// If partitioned, try to find child node to add to
         if !this.insertInChild(item, depth) {
