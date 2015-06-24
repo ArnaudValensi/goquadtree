@@ -38,8 +38,8 @@ func newQuadTreeNode(parent *quadTreeNode, rect Rect, maxItems int) *quadTreeNod
 
 // Print display the object.
 func (this *quadTreeNode) Print() {
-	fmt.Printf("parent:%p tl:%p tr:%p bl:%p br:%p isPart:%v nbItems:%d rect:", 
-		this.parentNode, 
+	fmt.Printf("parent:%p tl:%p tr:%p bl:%p br:%p isPart:%v nbItems:%d rect:",
+		this.parentNode,
 		this.topLeftNode,
 		this.topRightNode,
 		this.bottomLeftNode,
@@ -115,11 +115,11 @@ func (this *quadTreeNode) PushItemDown(e *list.Element, depth int) bool {
 func (this *quadTreeNode) partition(depth int) {
 	midPoint := PositionAdd(&this.rect.TopLeft, &this.rect.BottomRight)
 	midPoint.Div(2)
-	
+
         // Create the nodes
 	this.topLeftNode = newQuadTreeNode(
 		this,
-		*NewRect(&this.rect.TopLeft, midPoint), 
+		*NewRect(&this.rect.TopLeft, midPoint),
 		this.maxItems,
 		)
 
@@ -127,7 +127,7 @@ func (this *quadTreeNode) partition(depth int) {
 	secondPos := NewPosition(this.rect.BottomRight.X, midPoint.Y)
 	this.topRightNode = newQuadTreeNode(
 		this,
-		*NewRect(firstPos, secondPos), 
+		*NewRect(firstPos, secondPos),
 		this.maxItems,
 		)
 
@@ -135,13 +135,13 @@ func (this *quadTreeNode) partition(depth int) {
 	secondPos = NewPosition(midPoint.X, this.rect.BottomRight.Y)
 	this.bottomLeftNode = newQuadTreeNode(
 		this,
-		*NewRect(firstPos, secondPos), 
+		*NewRect(firstPos, secondPos),
 		this.maxItems,
 		)
 
 	this.bottomRightNode = newQuadTreeNode(
 		this,
-		*NewRect(midPoint, &this.rect.BottomRight), 
+		*NewRect(midPoint, &this.rect.BottomRight),
 		this.maxItems,
 		)
 
@@ -156,9 +156,9 @@ func (this *quadTreeNode) partition(depth int) {
 	}
 }
 
-// GetNode determine which node the object belongs to. 
+// GetNode determine which node the object belongs to.
 // Return node, error.
-// If error is true, object cannot completely fit within a child node and 
+// If error is true, object cannot completely fit within a child node and
 // is part of the parent node. In this case, node is nil.
 func (this *quadTreeNode) GetNode(rect *Rect) (*quadTreeNode, bool) {
         if this.topLeftNode.ContainsRect(rect) {

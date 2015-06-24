@@ -30,7 +30,7 @@ func (this *Rect) Eq(other *Rect) bool {
 }
 
 func (this *Rect) Print() {
-	fmt.Printf("(%d, %d), (%d, %d)", 
+	fmt.Printf("(%d, %d), (%d, %d)",
 		this.TopLeft.X, this.TopLeft.Y,
 		this.BottomRight.X, this.BottomRight.Y,
 	)
@@ -60,7 +60,7 @@ func (this *Position) Min(pos *Position) *Position {
 	} else {
 		x = this.X
 	}
-	
+
 	if this.Y > pos.Y {
 		y = pos.Y
 	} else {
@@ -81,7 +81,7 @@ func (this *Position) Max(pos *Position) *Position {
 	} else {
 		x = pos.X
 	}
-	
+
 	if this.Y > pos.Y {
 		y = this.Y
 	} else {
